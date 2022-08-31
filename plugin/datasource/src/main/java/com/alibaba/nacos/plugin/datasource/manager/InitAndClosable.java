@@ -22,16 +22,15 @@ package com.alibaba.nacos.plugin.datasource.manager;
  * @author hyx
  **/
 
-public interface Manager {
+public interface InitAndClosable {
     
     /**
-     * open the Manager.
-     * @return success or not.
+     * loadInitial the InitAndClosable.
      */
-    boolean open();
+    void loadInitial();
     
     /**
-     * close the Manager.
+     * close the InitAndClosable.
      * @return success or not.
      */
     boolean close();
