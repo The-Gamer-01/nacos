@@ -62,7 +62,6 @@ import com.alibaba.nacos.sys.env.EnvUtil;
 import org.apache.commons.collections.CollectionUtils;
 import com.alibaba.nacos.common.utils.StringUtils;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -259,7 +258,7 @@ public class EmbeddedStoragePersistServiceImpl implements PersistService {
             String md5 = MD5Utils.md5Hex(configInfo.getContent(), Constants.ENCODE);
             ConfigInfoBetaMapper configInfoBetaMapper = (ConfigInfoBetaMapper) mapperManager.findMapper(dataSource, TableConstant.CONFIG_INFO_BETA).get();
             final String sql = configInfoBetaMapper.insert(Arrays.asList("data_id", "group_id", "tenant_id", "app_name", "content", "md5", "beta_ips", "src_ip",
-                    "src_user","gmt_create", "gmt_modified", "encrypted_data_key"));
+                    "src_user", "gmt_create", "gmt_modified", "encrypted_data_key"));
             final Object[] args = new Object[] {configInfo.getDataId(), configInfo.getGroup(), tenantTmp, appNameTmp,
                     configInfo.getContent(), md5, betaIps, srcIp, srcUser, time, time, encryptedDataKey};
             
@@ -2169,7 +2168,7 @@ public class EmbeddedStoragePersistServiceImpl implements PersistService {
     public ConfigHistoryInfo detailConfigHistory(Long nid) {
         HistoryConfigInfoMapper historyConfigInfoMapper = (HistoryConfigInfoMapper) mapperManager.findMapper(dataSource, TableConstant.HIS_CONFIG_INFO).get();
         String sqlFetchRows = historyConfigInfoMapper.select(Arrays.asList("nid", "data_id", "group_id", "tenant_id", "app_name", "content", "md5", "src_user", "src_ip", "op_type", "gmt_create",
-                "gmt_modified","encrypted_data_key"), Collections.singletonList("nid"));
+                "gmt_modified", "encrypted_data_key"), Collections.singletonList("nid"));
         return databaseOperate.queryOne(sqlFetchRows, new Object[] {nid}, HISTORY_DETAIL_ROW_MAPPER);
     }
     
@@ -2386,6 +2385,7 @@ public class EmbeddedStoragePersistServiceImpl implements PersistService {
             paramList.addAll(ids);
         } else {
             paramList.add(tenantTmp);
+            params.put(TENANT, TENANT);
             if (!StringUtils.isBlank(dataId)) {
                 paramList.add(generateLikeArgument(dataId));
                 params.put(DATA_ID, DATA_ID);
